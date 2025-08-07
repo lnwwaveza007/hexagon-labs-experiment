@@ -5,6 +5,8 @@ import CreatorDashboard from './pages/CreatorDashboard'
 import CreatorMarketplace from './pages/CreatorMarketplace'
 import ContentCreation from './pages/ContentCreation'
 import EarningsAnalytics from './pages/EarningsAnalytics'
+import BrandDashboard from './pages/BrandDashboard'
+import CreatorSideDashboard from './pages/CreatorSideDashboard'
 import NotFound from './pages/NotFound'
 import './App.css'
 
@@ -18,6 +20,8 @@ function App() {
         <Route path="/creator-marketplace" element={<CreatorMarketplace />} />
         <Route path="/content-creation" element={<ContentCreation />} />
         <Route path="/earnings-analytics" element={<EarningsAnalytics />} />
+        <Route path="/brands" element={<BrandDashboard />} />
+        <Route path="/creators" element={<CreatorSideDashboard />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
