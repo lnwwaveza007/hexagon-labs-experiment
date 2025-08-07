@@ -5,12 +5,132 @@ interface AIToolsPanelProps {
   onClose: () => void
 }
 
+// Script Result Component
+const ScriptResult = ({ script, onCopy, onClear }: { script: string; onCopy: () => void; onClear: () => void }) => (
+  <div className="mt-6">
+    <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+      <span className="text-purple-600 mr-2">🎬</span>
+      Generated Script
+    </h4>
+    <div className="bg-gradient-to-br from-purple-50 to-indigo-50 p-6 rounded-xl border border-purple-200 shadow-sm">
+      <div className="bg-white p-4 rounded-lg border border-purple-100">
+        <pre className="whitespace-pre-wrap text-sm text-gray-700 leading-relaxed font-mono">{script}</pre>
+      </div>
+      <div className="flex space-x-3 mt-4">
+        <button 
+          onClick={onCopy}
+          className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center"
+        >
+          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+          Copy Script
+        </button>
+        <button 
+          onClick={onClear}
+          className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+        >
+          Clear
+        </button>
+      </div>
+    </div>
+  </div>
+)
+
+// Content Ideas Result Component
+const ContentIdeasResult = ({ ideas, onCopy, onClear }: { ideas: string[]; onCopy: () => void; onClear: () => void }) => (
+  <div className="mt-6">
+    <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+      <span className="text-blue-600 mr-2">💡</span>
+      Content Ideas
+    </h4>
+    <div className="bg-gradient-to-br from-blue-50 to-cyan-50 p-6 rounded-xl border border-blue-200 shadow-sm">
+      <div className="space-y-4">
+        {ideas.map((idea, index) => (
+          <div key={index} className="bg-white p-4 rounded-lg border border-blue-100 shadow-sm">
+            <div className="flex items-start">
+              <span className="bg-blue-100 text-blue-600 text-xs font-bold px-2 py-1 rounded-full mr-3 mt-1">
+                #{index + 1}
+              </span>
+              <p className="text-gray-700 leading-relaxed">{idea}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="flex space-x-3 mt-4">
+        <button 
+          onClick={onCopy}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+        >
+          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+          Copy All Ideas
+        </button>
+        <button 
+          onClick={onClear}
+          className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+        >
+          Clear
+        </button>
+      </div>
+    </div>
+  </div>
+)
+
+// Hashtag Result Component
+const HashtagResult = ({ hashtags, onCopy, onClear }: { hashtags: string[]; onCopy: () => void; onClear: () => void }) => (
+  <div className="mt-6">
+    <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+      <span className="text-green-600 mr-2">🏷️</span>
+      Generated Hashtags
+    </h4>
+    <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-200 shadow-sm">
+      <div className="bg-white p-4 rounded-lg border border-green-100">
+        <div className="flex flex-wrap gap-2">
+          {hashtags.map((hashtag, index) => (
+            <span 
+              key={index}
+              className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium hover:bg-green-200 transition-colors cursor-pointer"
+              onClick={() => navigator.clipboard.writeText(hashtag)}
+              title="Click to copy individual hashtag"
+            >
+              {hashtag}
+            </span>
+          ))}
+        </div>
+      </div>
+      <div className="flex space-x-3 mt-4">
+        <button 
+          onClick={onCopy}
+          className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center"
+        >
+          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+          Copy All Hashtags
+        </button>
+        <button 
+          onClick={onClear}
+          className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+        >
+          Clear
+        </button>
+      </div>
+    </div>
+  </div>
+)
+
 export default function AIToolsPanel({ onClose }: AIToolsPanelProps) {
   const [activeTool, setActiveTool] = useState('script')
   const [isLoading, setIsLoading] = useState(false)
-  const [result, setResult] = useState<string>('')
   const [error, setError] = useState<string>('')
   const [showApiKeyNotice, setShowApiKeyNotice] = useState(!import.meta.env.VITE_GEMINI_API_KEY)
+
+  // Separate result states for each tool
+  const [scriptResult, setScriptResult] = useState<string>('')
+  const [ideasResult, setIdeasResult] = useState<string[]>([])
+  const [hashtagsResult, setHashtagsResult] = useState<string[]>([])
 
   // Script Generation State
   const [scriptParams, setScriptParams] = useState<ScriptGenerationParams>({
@@ -59,11 +179,11 @@ export default function AIToolsPanel({ onClose }: AIToolsPanelProps) {
 
     setIsLoading(true)
     setError('')
-    setResult('')
+    setScriptResult('')
 
     try {
       const generatedScript = await geminiService.generateScript(scriptParams)
-      setResult(generatedScript)
+      setScriptResult(generatedScript)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate script')
     } finally {
@@ -79,11 +199,11 @@ export default function AIToolsPanel({ onClose }: AIToolsPanelProps) {
 
     setIsLoading(true)
     setError('')
-    setResult('')
+    setIdeasResult([])
 
     try {
       const ideas = await geminiService.generateContentIdeas(ideaParams)
-      setResult(ideas.join('\n\n'))
+      setIdeasResult(ideas)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate content ideas')
     } finally {
@@ -99,11 +219,11 @@ export default function AIToolsPanel({ onClose }: AIToolsPanelProps) {
 
     setIsLoading(true)
     setError('')
-    setResult('')
+    setHashtagsResult([])
 
     try {
       const hashtags = await geminiService.generateHashtags(hashtagParams)
-      setResult(hashtags.join(' '))
+      setHashtagsResult(hashtags)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate hashtags')
     } finally {
@@ -130,6 +250,87 @@ export default function AIToolsPanel({ onClose }: AIToolsPanelProps) {
       setIsLoading(false)
     }
   }
+
+  // Content Analysis Result Component
+  const ContentAnalysisResult = ({ analysis, onClear }: { 
+    analysis: { sentiment: string; engagement: string; suggestions: string[] }; 
+    onClear: () => void 
+  }) => (
+    <div className="mt-6">
+      <h4 className="font-semibold text-gray-900 mb-3 flex items-center">
+        <span className="text-orange-600 mr-2">📊</span>
+        Content Analysis Results
+      </h4>
+      <div className="bg-gradient-to-br from-orange-50 to-amber-50 p-6 rounded-xl border border-orange-200 shadow-sm">
+        <div className="grid md:grid-cols-2 gap-4 mb-4">
+          <div className="bg-white p-4 rounded-lg border border-orange-100">
+            <h5 className="font-medium text-gray-900 mb-2 flex items-center">
+              <span className="text-orange-600 mr-2">😊</span>
+              Sentiment Analysis
+            </h5>
+            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+              analysis.sentiment === 'positive' ? 'bg-green-100 text-green-800' :
+              analysis.sentiment === 'negative' ? 'bg-red-100 text-red-800' :
+              'bg-gray-100 text-gray-800'
+            }`}>
+              {analysis.sentiment.charAt(0).toUpperCase() + analysis.sentiment.slice(1)}
+            </span>
+          </div>
+          <div className="bg-white p-4 rounded-lg border border-orange-100">
+            <h5 className="font-medium text-gray-900 mb-2 flex items-center">
+              <span className="text-orange-600 mr-2">📈</span>
+              Engagement Potential
+            </h5>
+            <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+              analysis.engagement === 'high' ? 'bg-green-100 text-green-800' :
+              analysis.engagement === 'low' ? 'bg-red-100 text-red-800' :
+              'bg-yellow-100 text-yellow-800'
+            }`}>
+              {analysis.engagement.charAt(0).toUpperCase() + analysis.engagement.slice(1)}
+            </span>
+          </div>
+        </div>
+        
+        {analysis.suggestions && analysis.suggestions.length > 0 && (
+          <div className="bg-white p-4 rounded-lg border border-orange-100">
+            <h5 className="font-medium text-gray-900 mb-3 flex items-center">
+              <span className="text-orange-600 mr-2">💡</span>
+              Improvement Suggestions
+            </h5>
+            <div className="space-y-2">
+              {analysis.suggestions.map((suggestion, index) => (
+                <div key={index} className="flex items-start space-x-2">
+                  <span className="text-orange-500 text-sm mt-1">•</span>
+                  <p className="text-sm text-gray-700 leading-relaxed">{suggestion}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        <div className="flex space-x-3 mt-4">
+          <button 
+            onClick={() => {
+              const analysisText = `Sentiment: ${analysis.sentiment}\nEngagement: ${analysis.engagement}\n\nSuggestions:\n${analysis.suggestions.map(s => `• ${s}`).join('\n')}`
+              navigator.clipboard.writeText(analysisText)
+            }}
+            className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors flex items-center"
+          >
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            Copy Analysis
+          </button>
+          <button 
+            onClick={onClear}
+            className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+    </div>
+  )
 
   const renderScriptGenerator = () => (
     <div className="space-y-4">
@@ -364,47 +565,6 @@ export default function AIToolsPanel({ onClose }: AIToolsPanelProps) {
       >
         {isLoading ? 'Analyzing Content...' : 'Analyze Content'}
       </button>
-
-      {analysisResult && (
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <h4 className="font-semibold text-gray-900 mb-3">Analysis Results</h4>
-          <div className="space-y-3">
-            <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium text-gray-700">Sentiment:</span>
-              <span className={`px-2 py-1 rounded text-xs font-medium ${
-                analysisResult.sentiment === 'positive' ? 'bg-green-100 text-green-800' :
-                analysisResult.sentiment === 'negative' ? 'bg-red-100 text-red-800' :
-                'bg-gray-100 text-gray-800'
-              }`}>
-                {analysisResult.sentiment}
-              </span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-sm font-medium text-gray-700">Engagement Potential:</span>
-              <span className={`px-2 py-1 rounded text-xs font-medium ${
-                analysisResult.engagement === 'high' ? 'bg-green-100 text-green-800' :
-                analysisResult.engagement === 'low' ? 'bg-red-100 text-red-800' :
-                'bg-yellow-100 text-yellow-800'
-              }`}>
-                {analysisResult.engagement}
-              </span>
-            </div>
-            {analysisResult.suggestions && analysisResult.suggestions.length > 0 && (
-              <div>
-                <span className="text-sm font-medium text-gray-700">Suggestions:</span>
-                <ul className="mt-1 space-y-1">
-                  {analysisResult.suggestions.map((suggestion: string, index: number) => (
-                    <li key={index} className="text-sm text-gray-600 flex items-start">
-                      <span className="text-blue-500 mr-2">•</span>
-                      {suggestion}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   )
 
@@ -497,28 +657,10 @@ export default function AIToolsPanel({ onClose }: AIToolsPanelProps) {
                 </div>
               )}
 
-              {result && (
-                <div className="mt-6">
-                  <h4 className="font-semibold text-gray-900 mb-3">Generated Result:</h4>
-                  <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                    <pre className="whitespace-pre-wrap text-sm text-gray-700">{result}</pre>
-                  </div>
-                  <div className="flex space-x-3 mt-4">
-                    <button 
-                      onClick={() => navigator.clipboard.writeText(result)}
-                      className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
-                    >
-                      Copy to Clipboard
-                    </button>
-                    <button 
-                      onClick={() => setResult('')}
-                      className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
-                      Clear
-                    </button>
-                  </div>
-                </div>
-              )}
+              {activeTool === 'script' && scriptResult && <ScriptResult script={scriptResult} onCopy={() => navigator.clipboard.writeText(scriptResult)} onClear={() => setScriptResult('')} />}
+              {activeTool === 'ideas' && ideasResult.length > 0 && <ContentIdeasResult ideas={ideasResult} onCopy={() => navigator.clipboard.writeText(ideasResult.join('\n\n'))} onClear={() => setIdeasResult([])} />}
+              {activeTool === 'hashtags' && hashtagsResult.length > 0 && <HashtagResult hashtags={hashtagsResult} onCopy={() => navigator.clipboard.writeText(hashtagsResult.join(' '))} onClear={() => setHashtagsResult([])} />}
+              {activeTool === 'analyze' && analysisResult && <ContentAnalysisResult analysis={analysisResult} onClear={() => setAnalysisResult(null)} />}
             </div>
           </div>
         </div>

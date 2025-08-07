@@ -8,6 +8,36 @@ function ContentCreation() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [showAITools, setShowAITools] = useState(false)
 
+  // Templates state
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
+  const [showTemplateModal, setShowTemplateModal] = useState(false)
+  const [templateCustomization, setTemplateCustomization] = useState({
+    title: '',
+    description: '',
+    duration: '',
+    platform: 'Instagram'
+  })
+
+  // Scheduler state
+  const [showSchedulerModal, setShowSchedulerModal] = useState(false)
+  const [newScheduledContent, setNewScheduledContent] = useState({
+    title: '',
+    platform: 'Instagram',
+    scheduledFor: '',
+    description: ''
+  })
+  const [editingContent, setEditingContent] = useState<number | null>(null)
+
+  // Projects state
+  const [selectedProject, setSelectedProject] = useState<string | null>(null)
+  const [showProjectModal, setShowProjectModal] = useState(false)
+  const [projectDetails, setProjectDetails] = useState({
+    name: '',
+    type: 'Video',
+    description: '',
+    deadline: ''
+  })
+
   const tabs = [
     { id: 'tools', name: 'AI Tools', icon: '🤖' },
     { id: 'templates', name: 'Templates', icon: '📋' },
@@ -124,6 +154,81 @@ OUTRO (120-130 seconds):
     }, 3000)
   }
 
+  // Template handlers
+  const handleUseTemplate = (templateName: string) => {
+    setSelectedTemplate(templateName)
+    setTemplateCustomization({
+      title: `${templateName} Content`,
+      description: '',
+      duration: templates.find(t => t.name === templateName)?.duration || '',
+      platform: 'Instagram'
+    })
+    setShowTemplateModal(true)
+  }
+
+  const handleTemplateSubmit = () => {
+    // Simulate template application
+    alert(`✅ Template "${selectedTemplate}" applied successfully!\n\nCustomization:\n- Title: ${templateCustomization.title}\n- Platform: ${templateCustomization.platform}\n- Duration: ${templateCustomization.duration}`)
+    setShowTemplateModal(false)
+    setSelectedTemplate(null)
+    setTemplateCustomization({ title: '', description: '', duration: '', platform: 'Instagram' })
+  }
+
+  // Scheduler handlers
+  const handleScheduleNewContent = () => {
+    setNewScheduledContent({
+      title: '',
+      platform: 'Instagram',
+      scheduledFor: '',
+      description: ''
+    })
+    setShowSchedulerModal(true)
+  }
+
+  const handleEditScheduledContent = (contentId: number) => {
+    const content = scheduledContent.find(c => c.id === contentId)
+    if (content) {
+      setNewScheduledContent({
+        title: content.title,
+        platform: content.platform,
+        scheduledFor: content.scheduledFor,
+        description: ''
+      })
+      setEditingContent(contentId)
+      setShowSchedulerModal(true)
+    }
+  }
+
+  const handleSchedulerSubmit = () => {
+    if (editingContent) {
+      alert(`✅ Content "${newScheduledContent.title}" updated successfully!\n\nScheduled for: ${newScheduledContent.scheduledFor}\nPlatform: ${newScheduledContent.platform}`)
+    } else {
+      alert(`✅ New content "${newScheduledContent.title}" scheduled successfully!\n\nScheduled for: ${newScheduledContent.scheduledFor}\nPlatform: ${newScheduledContent.platform}`)
+    }
+    setShowSchedulerModal(false)
+    setEditingContent(null)
+    setNewScheduledContent({ title: '', platform: 'Instagram', scheduledFor: '', description: '' })
+  }
+
+  // Project handlers
+  const handleContinueProject = (projectName: string) => {
+    setSelectedProject(projectName)
+    setProjectDetails({
+      name: projectName,
+      type: 'Video',
+      description: '',
+      deadline: ''
+    })
+    setShowProjectModal(true)
+  }
+
+  const handleProjectSubmit = () => {
+    alert(`✅ Project "${projectDetails.name}" opened successfully!\n\nYou can now continue working on your content.`)
+    setShowProjectModal(false)
+    setSelectedProject(null)
+    setProjectDetails({ name: '', type: 'Video', description: '', deadline: '' })
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-100">
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -167,9 +272,9 @@ OUTRO (120-130 seconds):
           {/* Tab Content */}
           <div className="p-6">
             {activeTab === 'tools' && <AITools tools={aiTools} onGenerateScript={handleScriptGeneration} generatedScript={generatedScript} isGenerating={isGenerating} onOpenAITools={() => setShowAITools(true)} />}
-            {activeTab === 'templates' && <Templates templates={templates} />}
-            {activeTab === 'scheduler' && <Scheduler scheduledContent={scheduledContent} />}
-            {activeTab === 'projects' && <Projects />}
+            {activeTab === 'templates' && <Templates templates={templates} onUseTemplate={handleUseTemplate} />}
+            {activeTab === 'scheduler' && <Scheduler scheduledContent={scheduledContent} onScheduleNew={handleScheduleNewContent} onEditContent={handleEditScheduledContent} />}
+            {activeTab === 'projects' && <Projects onContinueProject={handleContinueProject} />}
           </div>
         </div>
       </div>
@@ -177,6 +282,182 @@ OUTRO (120-130 seconds):
       {/* AI Tools Panel */}
       {showAITools && (
         <AIToolsPanel onClose={() => setShowAITools(false)} />
+      )}
+
+      {/* Template Customization Modal */}
+      {showTemplateModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h3 className="text-xl font-semibold text-gray-900">Customize Template</h3>
+              <button
+                onClick={() => setShowTemplateModal(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Content Title</label>
+                <input
+                  type="text"
+                  value={templateCustomization.title}
+                  onChange={(e) => setTemplateCustomization({...templateCustomization, title: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter content title"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Platform</label>
+                <select
+                  value={templateCustomization.platform}
+                  onChange={(e) => setTemplateCustomization({...templateCustomization, platform: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option>Instagram</option>
+                  <option>YouTube</option>
+                  <option>TikTok</option>
+                  <option>Twitter</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+                <input
+                  type="text"
+                  value={templateCustomization.duration}
+                  onChange={(e) => setTemplateCustomization({...templateCustomization, duration: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="e.g., 2-3 min"
+                />
+              </div>
+              <div className="flex space-x-3 pt-4">
+                <button
+                  onClick={handleTemplateSubmit}
+                  className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Apply Template
+                </button>
+                <button
+                  onClick={() => setShowTemplateModal(false)}
+                  className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Scheduler Modal */}
+      {showSchedulerModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h3 className="text-xl font-semibold text-gray-900">
+                {editingContent ? 'Edit Scheduled Content' : 'Schedule New Content'}
+              </h3>
+              <button
+                onClick={() => setShowSchedulerModal(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Content Title</label>
+                <input
+                  type="text"
+                  value={newScheduledContent.title}
+                  onChange={(e) => setNewScheduledContent({...newScheduledContent, title: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  placeholder="Enter content title"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Platform</label>
+                <select
+                  value={newScheduledContent.platform}
+                  onChange={(e) => setNewScheduledContent({...newScheduledContent, platform: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                >
+                  <option>Instagram</option>
+                  <option>YouTube</option>
+                  <option>TikTok</option>
+                  <option>Twitter</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Schedule Date & Time</label>
+                <input
+                  type="datetime-local"
+                  value={newScheduledContent.scheduledFor}
+                  onChange={(e) => setNewScheduledContent({...newScheduledContent, scheduledFor: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+              <div className="flex space-x-3 pt-4">
+                <button
+                  onClick={handleSchedulerSubmit}
+                  className="flex-1 bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition-colors"
+                >
+                  {editingContent ? 'Update Schedule' : 'Schedule Content'}
+                </button>
+                <button
+                  onClick={() => setShowSchedulerModal(false)}
+                  className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Project Modal */}
+      {showProjectModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h3 className="text-xl font-semibold text-gray-900">Open Project</h3>
+              <button
+                onClick={() => setShowProjectModal(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="bg-purple-50 p-4 rounded-lg">
+                <h4 className="font-medium text-gray-900 mb-2">Project: {projectDetails.name}</h4>
+                <p className="text-sm text-gray-600">Ready to continue working on your content creation.</p>
+              </div>
+              <div className="flex space-x-3 pt-4">
+                <button
+                  onClick={handleProjectSubmit}
+                  className="flex-1 bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 transition-colors"
+                >
+                  Open Project
+                </button>
+                <button
+                  onClick={() => setShowProjectModal(false)}
+                  className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
@@ -297,7 +578,7 @@ function AITools({ tools, onGenerateScript, generatedScript, isGenerating, onOpe
   )
 }
 
-function Templates({ templates }: any) {
+function Templates({ templates, onUseTemplate }: any) {
   return (
     <div className="space-y-6">
       <h3 className="text-xl font-semibold text-gray-900">Content Templates</h3>
@@ -316,8 +597,12 @@ function Templates({ templates }: any) {
             
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-500">Duration: {template.duration}</span>
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                Use Template
+              <button 
+                onClick={() => onUseTemplate(template.name)}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+              >
+                <span>📋</span>
+                <span>Use Template</span>
               </button>
             </div>
           </div>
@@ -327,13 +612,17 @@ function Templates({ templates }: any) {
   )
 }
 
-function Scheduler({ scheduledContent }: any) {
+function Scheduler({ scheduledContent, onScheduleNew, onEditContent }: any) {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h3 className="text-xl font-semibold text-gray-900">Content Scheduler</h3>
-        <button className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
-          Schedule New Content
+        <button 
+          onClick={onScheduleNew}
+          className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center space-x-2"
+        >
+          <span>📅</span>
+          <span>Schedule New Content</span>
         </button>
       </div>
       
@@ -355,8 +644,12 @@ function Scheduler({ scheduledContent }: any) {
                 }`}>
                   {content.status}
                 </span>
-                <button className="text-purple-600 hover:text-purple-700 text-sm font-medium">
-                  Edit
+                <button 
+                  onClick={() => onEditContent(content.id)}
+                  className="text-purple-600 hover:text-purple-700 text-sm font-medium flex items-center space-x-1"
+                >
+                  <span>✏️</span>
+                  <span>Edit</span>
                 </button>
               </div>
             </div>
@@ -367,7 +660,7 @@ function Scheduler({ scheduledContent }: any) {
   )
 }
 
-function Projects() {
+function Projects({ onContinueProject }: any) {
   const projects = [
     { name: 'TechFlow Review', status: 'In Progress', progress: 75, type: 'Video' },
     { name: 'Fashion Lookbook', status: 'Completed', progress: 100, type: 'Photo' },
@@ -410,8 +703,12 @@ function Projects() {
                 }`}>
                   {project.status}
                 </span>
-                <button className="text-purple-600 hover:text-purple-700 text-sm font-medium">
-                  Continue
+                <button 
+                  onClick={() => onContinueProject(project.name)}
+                  className="text-purple-600 hover:text-purple-700 text-sm font-medium flex items-center space-x-1"
+                >
+                  <span>▶️</span>
+                  <span>Continue</span>
                 </button>
               </div>
             </div>
