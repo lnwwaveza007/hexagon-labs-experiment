@@ -29,7 +29,7 @@ function ContentCreation() {
   const [editingContent, setEditingContent] = useState<number | null>(null)
 
   // Projects state
-  const [selectedProject, setSelectedProject] = useState<string | null>(null)
+  const [, setSelectedProject] = useState<string | null>(null)
   const [showProjectModal, setShowProjectModal] = useState(false)
   const [projectDetails, setProjectDetails] = useState({
     name: '',

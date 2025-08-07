@@ -1,6 +1,20 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
+interface Campaign {
+  id: number
+  brand: string
+  title: string
+  description: string
+  reward: string
+  category: string
+  status: string
+  deadline: string
+  applications: number
+  requirements: string[]
+  tags: string[]
+}
+
 function CreatorMarketplace() {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
@@ -10,7 +24,7 @@ function CreatorMarketplace() {
   const [savedCampaigns, setSavedCampaigns] = useState<number[]>([])
   const [showApplicationModal, setShowApplicationModal] = useState(false)
   const [showCampaignModal, setShowCampaignModal] = useState(false)
-  const [selectedCampaign, setSelectedCampaign] = useState<any>(null)
+  const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null)
   const [applicationForm, setApplicationForm] = useState({
     portfolio: '',
     pitch: '',
@@ -103,7 +117,7 @@ function CreatorMarketplace() {
   })
 
   // Campaign interaction handlers
-  const handleApplyToCampaign = (campaign: any) => {
+  const handleApplyToCampaign = (campaign: Campaign) => {
     setSelectedCampaign(campaign)
     setApplicationForm({
       portfolio: '',
@@ -124,12 +138,14 @@ function CreatorMarketplace() {
     }
   }
 
-  const handleViewCampaignDetails = (campaign: any) => {
+  const handleViewCampaignDetails = (campaign: Campaign) => {
     setSelectedCampaign(campaign)
     setShowCampaignModal(true)
   }
 
   const handleSubmitApplication = () => {
+    if (!selectedCampaign) return
+    
     if (!applicationForm.portfolio || !applicationForm.pitch || !applicationForm.experience) {
       alert('⚠️ Please fill in all required fields')
       return
@@ -144,7 +160,7 @@ function CreatorMarketplace() {
     setApplicationForm({ portfolio: '', pitch: '', timeline: '', experience: '' })
   }
 
-  const handleQuickApply = (campaign: any) => {
+  const handleQuickApply = (campaign: Campaign) => {
     if (appliedCampaigns.includes(campaign.id)) {
       alert('ℹ️ You have already applied to this campaign')
       return
@@ -397,32 +413,32 @@ function CreatorMarketplace() {
 
                   <div className="pt-4">
                     <div className="flex space-x-3">
-                      <button 
-                        onClick={() => {
-                          setShowCampaignModal(false)
-                          handleApplyToCampaign(selectedCampaign)
-                        }}
-                        disabled={isApplied}
-                        className={`flex-1 py-3 rounded-lg transition-colors flex items-center justify-center space-x-2 ${
-                          isApplied 
-                            ? 'bg-gray-400 text-white cursor-not-allowed' 
-                            : 'bg-indigo-600 text-white hover:bg-indigo-700'
-                        }`}
-                      >
-                        <span>📝</span>
-                        <span>{isApplied ? 'Already Applied' : 'Apply Now'}</span>
-                      </button>
-                      <button 
-                        onClick={() => onSave(selectedCampaign.id)}
-                        className={`border py-3 px-4 rounded-lg transition-colors flex items-center space-x-2 ${
-                          isSaved 
-                            ? 'border-green-500 text-green-600 bg-green-50' 
-                            : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                        }`}
-                      >
-                        <span>{isSaved ? '💾' : '🔖'}</span>
-                        <span>{isSaved ? 'Saved' : 'Save'}</span>
-                      </button>
+                                             <button 
+                         onClick={() => {
+                           setShowCampaignModal(false)
+                           handleApplyToCampaign(selectedCampaign)
+                         }}
+                         disabled={appliedCampaigns.includes(selectedCampaign.id)}
+                         className={`flex-1 py-3 rounded-lg transition-colors flex items-center justify-center space-x-2 ${
+                           appliedCampaigns.includes(selectedCampaign.id)
+                             ? 'bg-gray-400 text-white cursor-not-allowed' 
+                             : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                         }`}
+                       >
+                         <span>📝</span>
+                         <span>{appliedCampaigns.includes(selectedCampaign.id) ? 'Already Applied' : 'Apply Now'}</span>
+                       </button>
+                       <button 
+                         onClick={() => handleSaveCampaign(selectedCampaign.id)}
+                         className={`border py-3 px-4 rounded-lg transition-colors flex items-center space-x-2 ${
+                           savedCampaigns.includes(selectedCampaign.id)
+                             ? 'border-green-500 text-green-600 bg-green-50' 
+                             : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                         }`}
+                       >
+                         <span>{savedCampaigns.includes(selectedCampaign.id) ? '💾' : '🔖'}</span>
+                         <span>{savedCampaigns.includes(selectedCampaign.id) ? 'Saved' : 'Save'}</span>
+                       </button>
                     </div>
                   </div>
                 </div>
@@ -444,11 +460,11 @@ function CampaignCard({
   isApplied, 
   isSaved 
 }: { 
-  campaign: any
-  onApply: (campaign: any) => void
+  campaign: Campaign
+  onApply: (campaign: Campaign) => void
   onSave: (campaignId: number) => void
-  onViewDetails: (campaign: any) => void
-  onQuickApply: (campaign: any) => void
+  onViewDetails: (campaign: Campaign) => void
+  onQuickApply: (campaign: Campaign) => void
   isApplied: boolean
   isSaved: boolean
 }) {
