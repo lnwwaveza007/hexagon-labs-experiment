@@ -627,7 +627,6 @@ function CreatorDiscovery({ creators, selectedCreators, onCreatorSelect }: any) 
 }
 
 function Campaigns({ campaigns, onCreateCampaign }: any) {
-  const [selectedCampaign, setSelectedCampaign] = useState<string | null>(null)
   const [showQuickActions, setShowQuickActions] = useState<string | null>(null)
   const [showCreatorPerformance, setShowCreatorPerformance] = useState<string | null>(null)
 
@@ -928,7 +927,7 @@ function Campaigns({ campaigns, onCreateCampaign }: any) {
                     <span className="w-20">Actions</span>
                   </div>
                   
-                  {creatorPerformanceData[campaign.id]?.map((creator: any) => (
+                  {creatorPerformanceData[campaign.id as keyof typeof creatorPerformanceData]?.map((creator: any) => (
                     <div key={creator.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                       <div className="flex items-center space-x-2 w-32">
                         <span className="text-lg">{creator.avatar}</span>

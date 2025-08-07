@@ -171,7 +171,7 @@ function CreatorSideDashboard() {
                 onApplyToCampaign={handleApplyToCampaign}
               />
             )}
-            {activeTab === 'earnings' && <Earnings earningsData={earningsData} />}
+            {activeTab === 'earnings' && <Earnings />}
             {activeTab === 'content' && <ContentManagement activeCampaigns={activeCampaigns} />}
             {activeTab === 'analytics' && <PerformanceAnalytics performanceMetrics={performanceMetrics} />}
             {activeTab === 'profile' && <ProfileSettings />}
@@ -308,7 +308,7 @@ function CampaignOpportunities({ opportunities, onApplyToCampaign }: any) {
   )
 }
 
-function Earnings({ earningsData }: any) {
+function Earnings() {
   return (
     <div className="space-y-6">
       <h3 className="text-xl font-semibold text-gray-900">Earnings & Payments</h3>
